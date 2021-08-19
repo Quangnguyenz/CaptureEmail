@@ -1,41 +1,67 @@
 window.onload = function () {
     let emailModal = document.getElementsByClassName('email-modal')[0];
-    let closeModal = document.getElementsByClassName('email-modal__close-btn')[0];
+    let closeButton = document.getElementsByClassName('email-modal__close-btn')[0];
     let emailState = false;
     let emailInput = document.getElementsByClassName('email-modal__input')[0];
     let emailButton = document.getElementsByClassName('email-modal__button')[0];
+    let thankContainer = document.getElementsByClassName('email-thank')[0];
+    let declineOffer = document.getElementsByClassName('email-modal__decline-offer')[0];
 
-    
-    
-    document.body.addEventListener('mouseleave', () => {
-        if (emailState == false) {
-            emailModal.classList.add('email-modal--visible')
-            emailState = true
+    function emailIsValid(email) {
+        return /\S+@\S+\.\S+/.test(email);
+    }
+
+    let showModal = () => {
+        emailModal.classList.add('email-modal--visible')
+        emailState = true
+    }
+
+    let closeModal = () => {
+        emailModal.classList.remove('email-modal--visible')
+
+    }
+
+    let addError = () => {
+        document.getElementsByClassName('email-modal__form-group')[0].classList.add('email-modal__form-group--error')
+        document.getElementsByClassName('email-modal__error-message')[0].classList.add('email-modal__error-message--active')
+    }
+
+    let removeError = () => {
+        document.getElementsByClassName('email-modal__form-group')[0].classList.remove('email-modal__form-group--error')
+        document.getElementsByClassName('email-modal__error-message')[0].classList.remove('email-modal__error-message--active')
+    }
+
+    let showThankMessage = () => {
+        thankContainer.classList.add('email-thank--success')
+        setTimeout( () => {
+            closeModal()
+        } ,3000)
+        ;
+    }
+
+    closeButton.addEventListener("click", () => {
+        closeModal()
+    });
+
+    emailInput.addEventListener('click', () => {
+        removeError()
+    })
+
+    emailButton.addEventListener('click', () => {
+        if (emailIsValid(emailInput.value)) {
+            showThankMessage();
+        } else {
+            addError();
         }
     })
 
-    closeModal.addEventListener("click", () => {
-        emailModal.classList.remove('email-modal--visible')
+    declineOffer.addEventListener('click', () => {
+        closeModal();
+    })
 
-    });
-
-    function emailIsValid (email){
-        return /\S+@\S+\.\S+/.test(email);
-    }
-    
-    emailButton.addEventListener('click', () => {
-        if(emailIsValid(emailInput.value)){
-            console.log(emailInput.value)
-        } else {
-            alert("invalid email")
+    document.body.addEventListener('mouseleave', () => {
+        if (emailState == false) {
+            showModal();
         }
-        }
-
-    )
-
-    console.log(document);
-
-
-
-
+    })
 }
